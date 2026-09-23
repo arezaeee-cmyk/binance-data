@@ -1,33 +1,25 @@
-name: Download Binance Data
+name: Download Full Binance Data
 
 on:
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   download:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download SQLite database
+      - name: Download full SQLite database
         run: |
           wget --timeout=120 --tries=5 \
-          "https://www.abzarsaz.com/xmoon/candles/binance_data/btcusdt_1m_from_2025-01-01.sqlite3" \
-          -O btcusdt_1m_from_2025-01-01.sqlite3
+          "https://www.abzarsaz.com/xmoon/candles/binance_data/btcusdt_1m_full_from_2025-01-01.sqlite3" \
+          -O btcusdt_1m_full_from_2025-01-01.sqlite3
 
-          ls -lh btcusdt_1m_from_2025-01-01.sqlite3
+          ls -lh btcusdt_1m_full_from_2025-01-01.sqlite3
 
-      - name: Create ZIP
-        run: |
-          zip -9 btcusdt_1m_from_2025.zip btcusdt_1m_from_2025-01-01.sqlite3
-          ls -lh btcusdt_1m_from_2025.zip
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: data-v1
-          name: BTCUSDT 1m Data
-          body: BTCUSDT 1m SQLite database from 2025-01-01
-          files: btcusdt_1m_from_2025.zip
+          name: btcusdt-1m-full-from-2025
+          path: btcusdt_1m_full_from_2025-01-01.sqlite3
+          compression-level: 6
+          retention-days: 7
